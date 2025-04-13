@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -113,7 +114,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
             <Button className="bg-eco-green hover:bg-eco-green-dark text-white">
               Purchase Carbon Offsets
             </Button>
-            <p className="mt-2 text-sm text-muted-foreground">Coming soon with blockchain integration</p>
+            <div className="mt-2">
+              <p className="text-sm text-muted-foreground font-semibold">Smart contract integration coming soon!</p>
+              <p className="text-xs text-muted-foreground">Transparent blockchain verification of carbon credits</p>
+            </div>
           </div>
         </CardContent>
       </Card>
