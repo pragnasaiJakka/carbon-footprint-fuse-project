@@ -1,12 +1,29 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogIn } from 'lucide-react';
+import { Leaf, LogIn, LogOut } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useToast } from '@/hooks/use-toast';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+  const handleLogout = () => {
+    // Clear user session
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('walletAddress');
+    
+    // Show toast notification
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    
+    // Navigate to login page
+    navigate('/login');
+  };
 
   return (
     <header className="w-full py-4 bg-gradient-to-r from-eco-green-light to-eco-blue-light shadow-md">
@@ -25,12 +42,22 @@ const Header = () => {
         </div>
         <div className="flex items-center">
           {isLoggedIn ? (
-            <Button 
-              className="bg-eco-green text-white px-4 py-2 rounded-md hover:bg-eco-green-dark transition-colors"
-              onClick={() => navigate('/dashboard')}
-            >
-              Dashboard
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                className="bg-eco-green text-white px-4 py-2 rounded-md hover:bg-eco-green-dark transition-colors"
+                onClick={() => navigate('/dashboard')}
+              >
+                Dashboard
+              </Button>
+              <Button 
+                variant="outline"
+                className="text-eco-forest border-eco-forest hover:bg-eco-forest/10"
+                onClick={handleLogout}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           ) : (
             <Button 
               className="bg-eco-green text-white px-4 py-2 rounded-md hover:bg-eco-green-dark transition-colors"

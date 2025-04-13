@@ -7,11 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import WalletConnect from '@/components/blockchain/WalletConnect';
 import TokenDashboard from '@/components/blockchain/TokenDashboard';
 import { setupAccountsChangedListener, setupChainChangedListener } from '@/services/blockchainService';
+import { Button } from "@/components/ui/button";
+import { LogOut } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
+  const { toast } = useToast();
 
   useEffect(() => {
     // Check if user is logged in
@@ -58,11 +62,41 @@ const Dashboard = () => {
     localStorage.setItem('walletAddress', address);
   };
 
+  const handleLogout = () => {
+    // Clear user session
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('walletAddress');
+    
+    // Reset states
+    setIsWalletConnected(false);
+    setWalletAddress('');
+    
+    // Show toast notification
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out",
+    });
+    
+    // Navigate to login page
+    navigate('/login');
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="flex justify-end mb-4">
+          <Button 
+            variant="outline"
+            className="text-eco-forest border-eco-forest hover:bg-eco-forest/10"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+        </div>
+        
         {isWalletConnected ? (
           <TokenDashboard walletAddress={walletAddress} />
         ) : (
