@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { AlertTriangle, Tree, CreditCard } from 'lucide-react';
+import { AlertTriangle, Trees, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface ResultsDisplayProps {
@@ -93,7 +92,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
             <Card className="border-eco-green-light">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center">
-                  <Tree className="h-12 w-12 text-eco-green mb-2" />
+                  <Trees className="h-12 w-12 text-eco-green mb-2" />
                   <h3 className="text-xl font-semibold">{result.treesNeeded} Trees</h3>
                   <p className="text-sm text-muted-foreground">needed yearly to offset your emissions</p>
                 </div>
