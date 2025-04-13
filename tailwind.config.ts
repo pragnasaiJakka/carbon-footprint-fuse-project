@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,29 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom colors for carbon footprint app
+				eco: {
+					green: {
+						light: '#8DD9B8',
+						DEFAULT: '#4CAF50',
+						dark: '#2E7D32',
+					},
+					blue: {
+						light: '#81D4FA',
+						DEFAULT: '#2196F3',
+						dark: '#0D47A1',
+					},
+					earth: {
+						light: '#D7CCC8',
+						DEFAULT: '#795548',
+						dark: '#3E2723',
+					},
+					leaf: '#81C784',
+					forest: '#2E7D32',
+					ocean: '#0288D1',
+					sky: '#03A9F4',
+					carbon: '#424242',
 				}
 			},
 			borderRadius: {
@@ -84,11 +108,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-slow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' },
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
 			}
 		}
 	},
