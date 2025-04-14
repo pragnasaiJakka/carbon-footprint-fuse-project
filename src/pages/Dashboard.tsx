@@ -8,7 +8,7 @@ import WalletConnect from '@/components/blockchain/WalletConnect';
 import TokenDashboard from '@/components/blockchain/TokenDashboard';
 import { setupAccountsChangedListener, setupChainChangedListener } from '@/services/blockchainService';
 import { Button } from "@/components/ui/button";
-import { LogOut } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -86,7 +86,16 @@ const Dashboard = () => {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <Button 
+            variant="outline"
+            className="text-eco-forest border-eco-forest hover:bg-eco-forest/10"
+            onClick={() => navigate('/profile')}
+          >
+            <User className="mr-2 h-4 w-4" />
+            My Profile
+          </Button>
+          
           <Button 
             variant="outline"
             className="text-eco-forest border-eco-forest hover:bg-eco-forest/10"

@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CalculatorPage from "./pages/CalculatorPage";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import PrivateRoute from "./components/PrivateRoute";
@@ -37,6 +38,14 @@ const App = () => (
             element={
               <PrivateRoute>
                 <CalculatorPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             } 
           />
