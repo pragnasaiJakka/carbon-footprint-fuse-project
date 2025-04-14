@@ -9,6 +9,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CalculatorPage from "./pages/CalculatorPage";
 import Profile from "./pages/Profile";
+import Blockchain from "./pages/Blockchain";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import PrivateRoute from "./components/PrivateRoute";
@@ -49,6 +51,8 @@ const App = () => (
               </PrivateRoute>
             } 
           />
+          <Route path="/blockchain" element={<Blockchain />} />
+          <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

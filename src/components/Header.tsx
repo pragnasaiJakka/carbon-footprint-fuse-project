@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogIn, LogOut, Calculator } from 'lucide-react';
+import { Leaf, LogIn, LogOut, Calculator, Info, Database } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 
@@ -38,8 +38,14 @@ const Header = () => {
           <Link to="/" className="text-eco-forest hover:text-eco-green-dark transition-colors">Home</Link>
           <Link to="/calculator" className="text-eco-forest hover:text-eco-green-dark transition-colors">Calculator</Link>
           <Link to="/dashboard" className="text-eco-forest hover:text-eco-green-dark transition-colors">Marketplace</Link>
-          <a href="#about" className="text-eco-forest hover:text-eco-green-dark transition-colors">About</a>
-          <a href="#blockchain" className="text-eco-forest hover:text-eco-green-dark transition-colors">Blockchain</a>
+          <Link to="/blockchain" className="text-eco-forest hover:text-eco-green-dark transition-colors flex items-center">
+            <Database className="h-4 w-4 mr-1" />
+            Blockchain
+          </Link>
+          <Link to="/about" className="text-eco-forest hover:text-eco-green-dark transition-colors flex items-center">
+            <Info className="h-4 w-4 mr-1" />
+            About
+          </Link>
         </div>
         <div className="flex items-center">
           {isLoggedIn ? (
