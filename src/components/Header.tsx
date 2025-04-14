@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogIn, LogOut } from 'lucide-react';
+import { Leaf, LogIn, LogOut, Calculator } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 
@@ -35,7 +35,8 @@ const Header = () => {
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="text-eco-forest hover:text-eco-green-dark transition-colors">Calculator</Link>
+          <Link to="/" className="text-eco-forest hover:text-eco-green-dark transition-colors">Home</Link>
+          <Link to="/calculator" className="text-eco-forest hover:text-eco-green-dark transition-colors">Calculator</Link>
           <Link to="/dashboard" className="text-eco-forest hover:text-eco-green-dark transition-colors">Marketplace</Link>
           <a href="#about" className="text-eco-forest hover:text-eco-green-dark transition-colors">About</a>
           <a href="#blockchain" className="text-eco-forest hover:text-eco-green-dark transition-colors">Blockchain</a>
