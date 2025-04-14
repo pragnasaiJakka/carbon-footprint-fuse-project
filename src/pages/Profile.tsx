@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -21,7 +20,8 @@ import {
   Bike, 
   Leaf, 
   BarChart, 
-  Award
+  Award,
+  ArrowLeft  // Added ArrowLeft icon for back navigation
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getTokenBalance } from '@/services/blockchainService';
@@ -136,16 +136,30 @@ const Profile = () => {
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
+  const handleGoBack = () => {
+    navigate(-1);  // Navigate to the previous page
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <h1 className="text-3xl font-bold text-eco-forest flex items-center">
-            <User className="mr-2 h-6 w-6" />
-            My Profile
-          </h1>
+          <div className="flex items-center space-x-4">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={handleGoBack}
+              className="text-eco-forest border-eco-forest hover:bg-eco-forest/10"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-3xl font-bold text-eco-forest flex items-center">
+              <User className="mr-2 h-6 w-6" />
+              My Profile
+            </h1>
+          </div>
           <Button 
             variant="outline"
             className="mt-4 md:mt-0 text-eco-forest border-eco-forest hover:bg-eco-forest/10"
