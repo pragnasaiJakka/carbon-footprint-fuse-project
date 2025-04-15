@@ -39,39 +39,39 @@ const EcoActivityForm: React.FC<EcoActivityFormProps> = ({ walletAddress, onSubm
 
     setIsSubmitting(true);
     try {
+      // Calculate earned credits based on distance
+      const earnedCredits = (data.distance * 0.1).toFixed(1);
+      
+      // Try blockchain operation first
       const success = await mintCarbonCredits(walletAddress, data);
       
-      if (success) {
-        // Calculate earned credits based on distance
-        const earnedCredits = (data.distance * 0.1).toFixed(1);
-        
-        // Store the activity in localStorage for history
-        const activities = JSON.parse(localStorage.getItem('ecoActivities') || '[]');
-        activities.push({
-          ...data,
-          timestamp: new Date().toISOString(),
-          credits: parseFloat(earnedCredits)
-        });
-        localStorage.setItem('ecoActivities', JSON.stringify(activities));
-        
-        // Update total balance in localStorage
-        const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
-        const newBalance = currentBalance + parseFloat(earnedCredits);
-        localStorage.setItem('tokenBalance', newBalance.toString());
-        
-        toast({
-          title: "Activity Submitted",
-          description: `You've earned ${earnedCredits} carbon credits for your eco-friendly activity!`,
-        });
-        form.reset();
-        onSubmitSuccess();
-      } else {
-        throw new Error("Failed to mint tokens");
-      }
+      // Store the activity in localStorage for history regardless of blockchain success
+      const activities = JSON.parse(localStorage.getItem('ecoActivities') || '[]');
+      activities.push({
+        ...data,
+        timestamp: new Date().toISOString(),
+        credits: parseFloat(earnedCredits)
+      });
+      localStorage.setItem('ecoActivities', JSON.stringify(activities));
+      
+      // Update total balance in localStorage
+      const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+      const newBalance = currentBalance + parseFloat(earnedCredits);
+      localStorage.setItem('tokenBalance', newBalance.toString());
+      
+      toast({
+        title: success ? "Activity Submitted" : "Demo: Activity Submitted",
+        description: `You've earned ${earnedCredits} carbon credits for your eco-friendly activity!`,
+      });
+      
+      form.reset();
+      // Trigger a refresh in parent component
+      onSubmitSuccess();
+      
     } catch (error: any) {
       console.error('Error submitting activity:', error);
       
-      // For demo purposes, still update localStorage
+      // Still update localStorage on error
       const earnedCredits = (data.distance * 0.1).toFixed(1);
       
       // Store the activity in localStorage for history
@@ -92,6 +92,7 @@ const EcoActivityForm: React.FC<EcoActivityFormProps> = ({ walletAddress, onSubm
         title: "Demo: Activity Submitted",
         description: `In demo mode, you've earned ${earnedCredits} carbon credits!`,
       });
+      
       form.reset();
       onSubmitSuccess();
     } finally {

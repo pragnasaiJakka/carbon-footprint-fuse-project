@@ -15,29 +15,32 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({ address, refreshTrigger }) 
 
   useEffect(() => {
     const fetchBalance = async () => {
+      setIsLoading(true);
+      
+      // First try to get from localStorage for immediate feedback
+      const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+      setBalance(localBalance);
+      
       if (address) {
-        setIsLoading(true);
         try {
-          // First try to get from blockchain
+          // Then try to get from blockchain (in case it's different)
           const tokenBalance = await getTokenBalance(address);
-          setBalance(tokenBalance);
+          if (tokenBalance > 0) {
+            setBalance(tokenBalance);
+            // Update localStorage if blockchain balance is valid
+            localStorage.setItem('tokenBalance', tokenBalance.toString());
+          }
         } catch (error) {
           console.error('Error fetching token balance:', error);
-          // Then try to get from localStorage as fallback
-          const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
-          setBalance(localBalance);
+          // Already set from localStorage above
         } finally {
           setIsLoading(false);
         }
+      } else {
+        setIsLoading(false);
       }
     };
 
-    // Always check localStorage first for immediate feedback
-    const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
-    setBalance(localBalance);
-    setIsLoading(false);
-
-    // Then try blockchain (in case it's different)
     fetchBalance();
   }, [address, refreshTrigger]);
 

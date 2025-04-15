@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -20,14 +21,21 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
   useEffect(() => {
     const fetchBalance = async () => {
       if (walletAddress) {
+        // Get balance from localStorage first for immediate feedback
+        const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+        setTokenBalance(localBalance);
+        
         try {
+          // Try to get from blockchain
           const balance = await getTokenBalance(walletAddress);
-          setTokenBalance(balance);
+          if (balance > 0) {
+            setTokenBalance(balance);
+            // Update localStorage if blockchain value is valid
+            localStorage.setItem('tokenBalance', balance.toString());
+          }
         } catch (error) {
           console.error('Error fetching token balance:', error);
-          // For demo purposes, try to get from localStorage
-          const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
-          setTokenBalance(localBalance);
+          // Already set from localStorage above
         }
       }
     };
@@ -36,6 +44,7 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
   }, [walletAddress, refreshTrigger]);
   
   const handleRefresh = () => {
+    // Increment refresh trigger to force useEffect to run again
     setRefreshTrigger(prev => prev + 1);
   };
 
