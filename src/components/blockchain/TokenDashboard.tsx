@@ -7,6 +7,7 @@ import TokenBalance from './TokenBalance';
 import EcoActivityForm from './EcoActivityForm';
 import Marketplace from './Marketplace';
 import Rewards from './Rewards';
+import Collaborations from './Collaborations';
 import { getTokenBalance } from '@/services/blockchainService';
 
 interface TokenDashboardProps {
@@ -25,8 +26,9 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
           setTokenBalance(balance);
         } catch (error) {
           console.error('Error fetching token balance:', error);
-          // For demo purposes
-          setTokenBalance(25);
+          // For demo purposes, try to get from localStorage
+          const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+          setTokenBalance(localBalance);
         }
       }
     };
@@ -83,9 +85,10 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
       </div>
       
       <Tabs defaultValue="marketplace" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
           <TabsTrigger value="rewards">Rewards</TabsTrigger>
+          <TabsTrigger value="collaborations">Collaborations</TabsTrigger>
         </TabsList>
         <TabsContent value="marketplace" className="mt-4">
           <Marketplace 
@@ -99,6 +102,11 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
             walletAddress={walletAddress}
             tokenBalance={tokenBalance}
             onRedemption={handleRefresh}
+          />
+        </TabsContent>
+        <TabsContent value="collaborations" className="mt-4">
+          <Collaborations 
+            walletAddress={walletAddress}
           />
         </TabsContent>
       </Tabs>

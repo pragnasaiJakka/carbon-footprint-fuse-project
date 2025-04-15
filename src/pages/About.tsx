@@ -10,7 +10,9 @@ import {
   Users, 
   HandshakeIcon, 
   HelpCircle,
-  Shield
+  Shield,
+  School,
+  GraduationCap
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -199,34 +201,43 @@ const About = () => {
               </CardHeader>
               <CardContent>
                 <p className="mb-6">
-                  Carbon Footprint Fuse was created by a team of students and developers passionate about using technology to address environmental challenges. We believe that blockchain technology offers unique opportunities to create more transparent, efficient, and accessible systems for environmental action.
+                  Carbon Footprint Fuse was created by a team of students passionate about using technology to address environmental challenges. We believe that blockchain technology offers unique opportunities to create more transparent, efficient, and accessible systems for environmental action.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex flex-col items-center text-center p-6 bg-eco-green/5 rounded-lg">
                     <div className="w-20 h-20 bg-eco-green/20 rounded-full flex items-center justify-center mb-4">
-                      <Users className="h-10 w-10 text-eco-forest" />
+                      <GraduationCap className="h-10 w-10 text-eco-forest" />
                     </div>
-                    <h3 className="font-semibold">The Developers</h3>
+                    <h3 className="font-semibold">Rithvik Kaki</h3>
                     <p className="text-sm mt-2">
-                      Computer science students with expertise in blockchain, web development, and UI/UX design
+                      Student Developer
+                    </p>
+                    <p className="text-xs mt-1 text-muted-foreground">
+                      Lead development and blockchain integration
                     </p>
                   </div>
                   <div className="flex flex-col items-center text-center p-6 bg-eco-green/5 rounded-lg">
                     <div className="w-20 h-20 bg-eco-green/20 rounded-full flex items-center justify-center mb-4">
-                      <Leaf className="h-10 w-10 text-eco-forest" />
+                      <GraduationCap className="h-10 w-10 text-eco-forest" />
                     </div>
-                    <h3 className="font-semibold">Environmental Advisors</h3>
+                    <h3 className="font-semibold">Pragna Sai</h3>
                     <p className="text-sm mt-2">
-                      Sustainability experts who ensure our carbon calculations and methodologies are scientifically sound
+                      Student Developer
+                    </p>
+                    <p className="text-xs mt-1 text-muted-foreground">
+                      Design and frontend development
                     </p>
                   </div>
                   <div className="flex flex-col items-center text-center p-6 bg-eco-green/5 rounded-lg">
                     <div className="w-20 h-20 bg-eco-green/20 rounded-full flex items-center justify-center mb-4">
-                      <Info className="h-10 w-10 text-eco-forest" />
+                      <School className="h-10 w-10 text-eco-forest" />
                     </div>
-                    <h3 className="font-semibold">You!</h3>
+                    <h3 className="font-semibold">U. Karthikeyan</h3>
                     <p className="text-sm mt-2">
-                      Our community of users who provide feedback, suggest features, and help us improve the platform
+                      Project Mentor
+                    </p>
+                    <p className="text-xs mt-1 text-muted-foreground">
+                      Academic guidance and project supervision
                     </p>
                   </div>
                 </div>

@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Check } from 'lucide-react';
+import { Building, Award, Check, TreeDeciduous, BadgePercent, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { getAvailableRewards, redeemReward, Reward } from '@/services/blockchainService';
+import { redeemReward } from '@/services/blockchainService';
 
 interface RewardsProps {
   walletAddress: string;
@@ -12,13 +12,51 @@ interface RewardsProps {
   onRedemption: () => void;
 }
 
+// Updated business-focused rewards
+const businessRewards = [
+  {
+    id: 1,
+    name: "Green Marketing Package",
+    description: "Promote your company's eco-initiatives with a featured spot in a sustainability newsletter and social media mentions.",
+    tokenCost: 10,
+    icon: <BadgePercent className="h-5 w-5 text-eco-green" />
+  },
+  {
+    id: 2,
+    name: "Sustainable Supplier Directory Access",
+    description: "Gain access to a curated list of verified sustainable suppliers and partners for your business.",
+    tokenCost: 15,
+    icon: <Building className="h-5 w-5 text-eco-green" />
+  },
+  {
+    id: 3,
+    name: "Carbon Footprint Assessment Voucher",
+    description: "Get a professional assessment of your company's carbon footprint and personalized reduction strategies.",
+    tokenCost: 20,
+    icon: <FileText className="h-5 w-5 text-eco-green" />
+  },
+  {
+    id: 4,
+    name: "Eco-Certification Application Support",
+    description: "Receive expert help in applying for recognized sustainability certifications (e.g., B Corp, ISO 14001).",
+    tokenCost: 25,
+    icon: <Award className="h-5 w-5 text-eco-green" />
+  },
+  {
+    id: 5,
+    name: "Tree Planting Partnership (Corporate Level)",
+    description: "Partner with us to plant 50 trees in your company's name, including a certificate and impact report.",
+    tokenCost: 30,
+    icon: <TreeDeciduous className="h-5 w-5 text-eco-green" />
+  }
+];
+
 const Rewards: React.FC<RewardsProps> = ({ walletAddress, tokenBalance, onRedemption }) => {
-  const [rewards] = useState<Reward[]>(getAvailableRewards());
   const [redeeming, setRedeeming] = useState<number | null>(null);
   const [redeemed, setRedeemed] = useState<Record<number, string>>({});
   const { toast } = useToast();
 
-  const handleRedeem = async (reward: Reward) => {
+  const handleRedeem = async (reward: typeof businessRewards[0]) => {
     if (!walletAddress) {
       toast({
         title: "Wallet Required",
@@ -46,6 +84,11 @@ const Rewards: React.FC<RewardsProps> = ({ walletAddress, tokenBalance, onRedemp
         const code = Math.random().toString(36).substring(2, 10).toUpperCase();
         setRedeemed({...redeemed, [reward.id]: code});
         
+        // Update token balance in localStorage
+        const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+        const newBalance = Math.max(0, currentBalance - reward.tokenCost);
+        localStorage.setItem('tokenBalance', newBalance.toString());
+        
         toast({
           title: "Reward Redeemed",
           description: `You've successfully redeemed ${reward.name}. Your code is ${code}`,
@@ -62,6 +105,11 @@ const Rewards: React.FC<RewardsProps> = ({ walletAddress, tokenBalance, onRedemp
       const code = Math.random().toString(36).substring(2, 10).toUpperCase();
       setRedeemed({...redeemed, [reward.id]: code});
       
+      // Update token balance in localStorage
+      const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+      const newBalance = Math.max(0, currentBalance - reward.tokenCost);
+      localStorage.setItem('tokenBalance', newBalance.toString());
+      
       toast({
         title: "Demo: Reward Redeemed",
         description: `In demo mode, you've redeemed ${reward.name}. Your code is ${code}`,
@@ -76,12 +124,12 @@ const Rewards: React.FC<RewardsProps> = ({ walletAddress, tokenBalance, onRedemp
   return (
     <Card className="shadow-md border-eco-blue-light">
       <CardHeader>
-        <CardTitle className="text-xl text-eco-forest">Rewards Marketplace</CardTitle>
-        <CardDescription>Redeem your carbon credits for exclusive rewards</CardDescription>
+        <CardTitle className="text-xl text-eco-forest">Business Rewards Marketplace</CardTitle>
+        <CardDescription>Redeem your carbon credits for sustainable business advantages</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {rewards.map((reward) => (
+          {businessRewards.map((reward) => (
             <Card key={reward.id} className="border-eco-green-light overflow-hidden">
               <div className="p-4 flex flex-col h-full">
                 <div className="mb-4 flex-grow">
@@ -91,7 +139,7 @@ const Rewards: React.FC<RewardsProps> = ({ walletAddress, tokenBalance, onRedemp
                       <p className="text-sm text-muted-foreground">{reward.description}</p>
                     </div>
                     <div className="bg-eco-green/10 rounded-full p-2">
-                      <Gift className="h-5 w-5 text-eco-green" />
+                      {reward.icon}
                     </div>
                   </div>
                 </div>

@@ -9,8 +9,9 @@ export interface CarbonDataEntry {
   reusableCarbonPercentage: number;
 }
 
-// Sample dataset structure - in a real application, this would be loaded from an API or CSV
+// Sample dataset structure - expanded with more countries and sectors
 export const carbonDataset: CarbonDataEntry[] = [
+  // United States
   {
     country: "United States",
     sector: "Transportation",
@@ -53,28 +54,56 @@ export const carbonDataset: CarbonDataEntry[] = [
   },
   {
     country: "United States",
-    sector: "Energy",
-    subSector: "Natural Gas",
-    totalCarbonEmission: 0.198, // kg CO2 per kWh
-    reusableAllocation: ["Biogas", "Hydrogen Blending"],
+    sector: "Agriculture",
+    subSector: "Livestock",
+    totalCarbonEmission: 13.5, // kg CO2 per kg product
+    reusableAllocation: ["Sustainable Farming", "Methane Capture"],
     reusableCarbonPercentage: 0.25
   },
+  
+  // India (Added as requested)
   {
-    country: "United States",
-    sector: "Household",
-    subSector: "Heating",
-    totalCarbonEmission: 0.35, // kg CO2 per hour
-    reusableAllocation: ["Heat Pumps", "Solar Thermal", "Improved Insulation"],
+    country: "India",
+    sector: "Transportation",
+    subSector: "Car (Gasoline)",
+    totalCarbonEmission: 0.210, // kg CO2 per kilometer
+    reusableAllocation: ["Electric Vehicles", "Public Transportation", "CNG Conversion"],
+    reusableCarbonPercentage: 0.30
+  },
+  {
+    country: "India",
+    sector: "Transportation",
+    subSector: "Two-Wheeler",
+    totalCarbonEmission: 0.08, // kg CO2 per kilometer
+    reusableAllocation: ["Electric Scooters", "Cycling"],
     reusableCarbonPercentage: 0.40
   },
   {
-    country: "United States",
-    sector: "Household",
-    subSector: "Cooking",
-    totalCarbonEmission: 0.17, // kg CO2 per hour
-    reusableAllocation: ["Induction Cooking", "Solar Cookers"],
+    country: "India",
+    sector: "Energy",
+    subSector: "Electricity",
+    totalCarbonEmission: 0.82, // kg CO2 per kWh (higher due to coal reliance)
+    reusableAllocation: ["Solar Power", "Wind Power", "Biogas"],
+    reusableCarbonPercentage: 0.50
+  },
+  {
+    country: "India",
+    sector: "Industry",
+    subSector: "Manufacturing",
+    totalCarbonEmission: 0.95, // kg CO2 per unit
+    reusableAllocation: ["Energy Efficiency", "Clean Production"],
     reusableCarbonPercentage: 0.35
   },
+  {
+    country: "India",
+    sector: "Agriculture",
+    subSector: "Rice Cultivation",
+    totalCarbonEmission: 3.9, // kg CO2 per kg
+    reusableAllocation: ["Alternate Wetting Drying", "Improved Varieties"],
+    reusableCarbonPercentage: 0.30
+  },
+  
+  // United Kingdom
   {
     country: "United Kingdom",
     sector: "Transportation",
@@ -92,6 +121,16 @@ export const carbonDataset: CarbonDataEntry[] = [
     reusableCarbonPercentage: 0.65
   },
   {
+    country: "United Kingdom",
+    sector: "Building",
+    subSector: "Residential Heating",
+    totalCarbonEmission: 0.19, // kg CO2 per kWh
+    reusableAllocation: ["Heat Pumps", "Home Insulation"],
+    reusableCarbonPercentage: 0.50
+  },
+  
+  // Germany
+  {
     country: "Germany",
     sector: "Transportation",
     subSector: "Car (Diesel)",
@@ -107,6 +146,16 @@ export const carbonDataset: CarbonDataEntry[] = [
     reusableAllocation: ["Wind Power", "Solar Power", "Biomass"],
     reusableCarbonPercentage: 0.58
   },
+  {
+    country: "Germany",
+    sector: "Industry",
+    subSector: "Steel Production",
+    totalCarbonEmission: 1.8, // kg CO2 per kg steel
+    reusableAllocation: ["Hydrogen Steel", "Electric Arc Furnaces"],
+    reusableCarbonPercentage: 0.40
+  },
+  
+  // Japan
   {
     country: "Japan",
     sector: "Transportation",
@@ -124,6 +173,16 @@ export const carbonDataset: CarbonDataEntry[] = [
     reusableCarbonPercentage: 0.48
   },
   {
+    country: "Japan",
+    sector: "Industry",
+    subSector: "Automotive Manufacturing",
+    totalCarbonEmission: 5.2, // kg CO2 per vehicle
+    reusableAllocation: ["Green Manufacturing", "Recycled Materials"],
+    reusableCarbonPercentage: 0.35
+  },
+  
+  // China
+  {
     country: "China",
     sector: "Transportation",
     subSector: "Electric Vehicle",
@@ -138,6 +197,68 @@ export const carbonDataset: CarbonDataEntry[] = [
     totalCarbonEmission: 0.9, // kg CO2 per kWh
     reusableAllocation: ["Carbon Capture", "Transition to Renewables"],
     reusableCarbonPercentage: 0.18
+  },
+  {
+    country: "China",
+    sector: "Industry",
+    subSector: "Cement Production",
+    totalCarbonEmission: 0.83, // kg CO2 per kg
+    reusableAllocation: ["Alternative Materials", "Energy Efficiency"],
+    reusableCarbonPercentage: 0.25
+  },
+  
+  // Brazil
+  {
+    country: "Brazil",
+    sector: "Land Use",
+    subSector: "Deforestation",
+    totalCarbonEmission: 12.5, // kg CO2 per square meter
+    reusableAllocation: ["Reforestation", "Sustainable Agriculture"],
+    reusableCarbonPercentage: 0.70
+  },
+  {
+    country: "Brazil",
+    sector: "Agriculture",
+    subSector: "Cattle Ranching",
+    totalCarbonEmission: 16.3, // kg CO2 per kg beef
+    reusableAllocation: ["Improved Feed", "Rotational Grazing"],
+    reusableCarbonPercentage: 0.40
+  },
+  
+  // Canada
+  {
+    country: "Canada",
+    sector: "Transportation",
+    subSector: "SUV/Truck",
+    totalCarbonEmission: 0.23, // kg CO2 per kilometer
+    reusableAllocation: ["Electric Vehicles", "Car Sharing"],
+    reusableCarbonPercentage: 0.30
+  },
+  {
+    country: "Canada",
+    sector: "Building",
+    subSector: "Winter Heating",
+    totalCarbonEmission: 0.26, // kg CO2 per kWh
+    reusableAllocation: ["Better Insulation", "Heat Pumps"],
+    reusableCarbonPercentage: 0.45
+  },
+  
+  // Australia
+  {
+    country: "Australia",
+    sector: "Energy",
+    subSector: "Coal Power",
+    totalCarbonEmission: 0.85, // kg CO2 per kWh
+    reusableAllocation: ["Solar Power", "Wind Power"],
+    reusableCarbonPercentage: 0.60
+  },
+  {
+    country: "Australia",
+    sector: "Building",
+    subSector: "Air Conditioning",
+    totalCarbonEmission: 0.18, // kg CO2 per hour
+    reusableAllocation: ["Solar Cooling", "Efficient Design"],
+    reusableCarbonPercentage: 0.50
   }
 ];
 
@@ -192,4 +313,14 @@ export const getSavedCalculationResult = (): CarbonFootprintResult | null => {
     return JSON.parse(saved);
   }
   return null;
+};
+
+// Get all sectors across all countries
+export const getAllSectors = (): string[] => {
+  return Array.from(new Set(carbonDataset.map(entry => entry.sector)));
+};
+
+// Get all subsectors across all countries and sectors
+export const getAllSubSectors = (): string[] => {
+  return Array.from(new Set(carbonDataset.map(entry => entry.subSector)));
 };

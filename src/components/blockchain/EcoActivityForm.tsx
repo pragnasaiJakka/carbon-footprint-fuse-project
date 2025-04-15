@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Leaf, Bike, Car, Train, Plus } from 'lucide-react';
@@ -43,9 +42,26 @@ const EcoActivityForm: React.FC<EcoActivityFormProps> = ({ walletAddress, onSubm
       const success = await mintCarbonCredits(walletAddress, data);
       
       if (success) {
+        // Calculate earned credits based on distance
+        const earnedCredits = (data.distance * 0.1).toFixed(1);
+        
+        // Store the activity in localStorage for history
+        const activities = JSON.parse(localStorage.getItem('ecoActivities') || '[]');
+        activities.push({
+          ...data,
+          timestamp: new Date().toISOString(),
+          credits: parseFloat(earnedCredits)
+        });
+        localStorage.setItem('ecoActivities', JSON.stringify(activities));
+        
+        // Update total balance in localStorage
+        const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+        const newBalance = currentBalance + parseFloat(earnedCredits);
+        localStorage.setItem('tokenBalance', newBalance.toString());
+        
         toast({
           title: "Activity Submitted",
-          description: `You've earned carbon credits for your eco-friendly activity!`,
+          description: `You've earned ${earnedCredits} carbon credits for your eco-friendly activity!`,
         });
         form.reset();
         onSubmitSuccess();
@@ -55,10 +71,26 @@ const EcoActivityForm: React.FC<EcoActivityFormProps> = ({ walletAddress, onSubm
     } catch (error: any) {
       console.error('Error submitting activity:', error);
       
-      // For demo purposes, show success anyway
+      // For demo purposes, still update localStorage
+      const earnedCredits = (data.distance * 0.1).toFixed(1);
+      
+      // Store the activity in localStorage for history
+      const activities = JSON.parse(localStorage.getItem('ecoActivities') || '[]');
+      activities.push({
+        ...data,
+        timestamp: new Date().toISOString(),
+        credits: parseFloat(earnedCredits)
+      });
+      localStorage.setItem('ecoActivities', JSON.stringify(activities));
+      
+      // Update total balance in localStorage
+      const currentBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+      const newBalance = currentBalance + parseFloat(earnedCredits);
+      localStorage.setItem('tokenBalance', newBalance.toString());
+      
       toast({
         title: "Demo: Activity Submitted",
-        description: `In demo mode, you've earned ${(data.distance * 0.1).toFixed(1)} carbon credits!`,
+        description: `In demo mode, you've earned ${earnedCredits} carbon credits!`,
       });
       form.reset();
       onSubmitSuccess();

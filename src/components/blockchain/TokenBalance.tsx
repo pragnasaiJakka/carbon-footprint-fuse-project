@@ -18,18 +18,26 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({ address, refreshTrigger }) 
       if (address) {
         setIsLoading(true);
         try {
+          // First try to get from blockchain
           const tokenBalance = await getTokenBalance(address);
           setBalance(tokenBalance);
         } catch (error) {
           console.error('Error fetching token balance:', error);
-          // For demo, set mock balance
-          setBalance(25);
+          // Then try to get from localStorage as fallback
+          const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+          setBalance(localBalance);
         } finally {
           setIsLoading(false);
         }
       }
     };
 
+    // Always check localStorage first for immediate feedback
+    const localBalance = parseFloat(localStorage.getItem('tokenBalance') || '0');
+    setBalance(localBalance);
+    setIsLoading(false);
+
+    // Then try blockchain (in case it's different)
     fetchBalance();
   }, [address, refreshTrigger]);
 
