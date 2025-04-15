@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Handshake, Users, Globe, Building, Check, Send } from 'lucide-react';
 
 interface CollaborationsProps {
   walletAddress: string;
+  tokenBalance?: number; // Added tokenBalance as an optional prop
 }
 
 // Sample collaboration opportunities
@@ -39,7 +39,7 @@ const collaborationData = [
   }
 ];
 
-const Collaborations: React.FC<CollaborationsProps> = ({ walletAddress }) => {
+const Collaborations: React.FC<CollaborationsProps> = ({ walletAddress, tokenBalance }) => {
   const [contactFormVisible, setContactFormVisible] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [contactDetails, setContactDetails] = useState("");
