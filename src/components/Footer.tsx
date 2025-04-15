@@ -1,8 +1,16 @@
 
 import React from 'react';
-import { Github, Twitter, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
+  const emailAddresses = ["rithvikkaki1011@gmail.com", "info@carbonfootprintfuse.com"];
+  
+  const handleEmailClick = () => {
+    const emailSubject = "Carbon Footprint Fuse Inquiry";
+    const emailList = emailAddresses.join(',');
+    window.location.href = `mailto:${emailList}?subject=${encodeURIComponent(emailSubject)}`;
+  };
+
   return (
     <footer className="bg-eco-carbon text-white py-8">
       <div className="container mx-auto px-4">
@@ -24,15 +32,15 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4">Connect</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-eco-green-light transition-colors">
+              <a href="https://github.com/rithvikkaki" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-eco-green-light transition-colors">
                 <Github size={24} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-eco-green-light transition-colors">
-                <Twitter size={24} />
+              <a href="https://www.linkedin.com/in/rithvikkaki" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-eco-green-light transition-colors">
+                <Linkedin size={24} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-eco-green-light transition-colors">
+              <button onClick={handleEmailClick} className="text-gray-300 hover:text-eco-green-light transition-colors">
                 <Mail size={24} />
-              </a>
+              </button>
             </div>
           </div>
         </div>

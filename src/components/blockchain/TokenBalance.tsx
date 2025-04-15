@@ -25,10 +25,13 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({ address, refreshTrigger }) 
         try {
           // Then try to get from blockchain (in case it's different)
           const tokenBalance = await getTokenBalance(address);
-          if (tokenBalance > 0) {
+          console.log('Fetched token balance:', tokenBalance);
+          
+          if (tokenBalance !== undefined) {
             setBalance(tokenBalance);
             // Update localStorage if blockchain balance is valid
             localStorage.setItem('tokenBalance', tokenBalance.toString());
+            console.log('Updated localStorage token balance:', tokenBalance);
           }
         } catch (error) {
           console.error('Error fetching token balance:', error);
@@ -42,6 +45,8 @@ const TokenBalance: React.FC<TokenBalanceProps> = ({ address, refreshTrigger }) 
     };
 
     fetchBalance();
+    // Log when the refresh is triggered
+    console.log('TokenBalance refresh triggered:', refreshTrigger);
   }, [address, refreshTrigger]);
 
   return (
