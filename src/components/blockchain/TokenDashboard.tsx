@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -85,11 +84,13 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
       </div>
       
       <Tabs defaultValue="marketplace" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
           <TabsTrigger value="rewards">Rewards</TabsTrigger>
           <TabsTrigger value="collaborations">Collaborations</TabsTrigger>
+          <TabsTrigger value="network">Network</TabsTrigger>
         </TabsList>
+        
         <TabsContent value="marketplace" className="mt-4">
           <Marketplace 
             walletAddress={walletAddress}
@@ -104,10 +105,31 @@ const TokenDashboard: React.FC<TokenDashboardProps> = ({ walletAddress }) => {
             onRedemption={handleRefresh}
           />
         </TabsContent>
+        
         <TabsContent value="collaborations" className="mt-4">
           <Collaborations 
             walletAddress={walletAddress}
+            tokenBalance={tokenBalance}
           />
+        </TabsContent>
+        
+        <TabsContent value="network" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Blockchain Network Details</CardTitle>
+              <CardDescription>Your current network and transaction overview</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <strong>Network:</strong> Polygon Mumbai Testnet
+                </div>
+                <div>
+                  <strong>Connected Wallet:</strong> {walletAddress}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

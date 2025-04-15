@@ -1,4 +1,3 @@
-
 // Simple carbon footprint calculation utilities
 
 // Electricity carbon factors (kg CO2 per kWh)
@@ -26,7 +25,12 @@ const TRANSPORTATION_FACTORS = {
   plane_long: 0.18,
   ferry: 0.22,
   walking: 0,
-  cycling: 0
+  cycling: 0,
+  // New transportation modes
+  electric_scooter: 0.02,
+  carpooling: 0.08,
+  ride_sharing: 0.07,
+  electric_bike: 0.01
 };
 
 // Diet carbon factors (kg CO2 per day)
@@ -61,7 +65,18 @@ const COUNTRY_FACTORS = {
   "Sweden": 0.5, // Very low carbon electricity
   "Singapore": 1.0,
   "Nigeria": 1.05,
-  "South Korea": 0.95
+  "South Korea": 0.95,
+  // New countries
+  "Indonesia": 1.1,
+  "Pakistan": 1.05,
+  "Bangladesh": 1.0,
+  "Philippines": 0.95,
+  "Vietnam": 1.05,
+  "Turkey": 1.0,
+  "Iran": 1.15,
+  "Poland": 0.9,
+  "Thailand": 0.95,
+  "United Arab Emirates": 1.2
 };
 
 // Housing carbon factors (kg CO2 per square meter per year)
@@ -101,6 +116,10 @@ export interface CarbonFootprintInputs {
   waste?: {
     level: keyof typeof WASTE_FACTORS;
     amount: number; // kg per week
+  };
+  sector?: {
+    main: 'transportation' | 'energy' | 'diet' | 'housing' | 'waste' | 'industrial';
+    subsector?: string;
   };
 }
 
@@ -213,3 +232,73 @@ export const getWasteLevelOptions = () => {
     label: key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ')
   }));
 };
+
+export const getSectorOptions = () => [
+  { 
+    value: 'transportation', 
+    label: 'Transportation',
+    subsectors: [
+      'personal_vehicle', 
+      'public_transit', 
+      'air_travel', 
+      'bicycle', 
+      'walking', 
+      'ride_sharing'
+    ]
+  },
+  { 
+    value: 'energy', 
+    label: 'Energy',
+    subsectors: [
+      'home_electricity', 
+      'renewable_energy', 
+      'heating', 
+      'cooling', 
+      'appliances'
+    ]
+  },
+  { 
+    value: 'diet', 
+    label: 'Diet',
+    subsectors: [
+      'meat_consumption', 
+      'vegetarian', 
+      'vegan', 
+      'local_food', 
+      'organic_food'
+    ]
+  },
+  { 
+    value: 'housing', 
+    label: 'Housing',
+    subsectors: [
+      'apartment', 
+      'house', 
+      'energy_efficiency', 
+      'insulation', 
+      'heating_cooling'
+    ]
+  },
+  { 
+    value: 'waste', 
+    label: 'Waste',
+    subsectors: [
+      'recycling', 
+      'composting', 
+      'landfill', 
+      'reduction', 
+      'reuse'
+    ]
+  },
+  { 
+    value: 'industrial', 
+    label: 'Industrial',
+    subsectors: [
+      'manufacturing', 
+      'construction', 
+      'agriculture', 
+      'mining', 
+      'services'
+    ]
+  }
+];
