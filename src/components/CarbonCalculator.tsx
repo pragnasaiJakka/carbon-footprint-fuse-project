@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +15,8 @@ import {
   getSubSectors, 
   getDataEntry, 
   saveCalculationResult, 
-  CarbonFootprintResult 
+  CarbonFootprintResult,
+  getActivityGuide
 } from '../data/carbonDataset';
 
 interface CalculatorFormValues {
@@ -89,86 +89,14 @@ const CarbonCalculator = () => {
     setCurrentStep("subsector");
   };
   
-  // Handle subsector selection and set appropriate activity value guidance
+  // Update handleSubSectorChange to use the new guide function
   const handleSubSectorChange = (value: string) => {
     form.setValue('subSector', value);
-    
     const sector = form.getValues('sector');
     
-    // Set activity value guidance based on sector and subsector
-    if (sector === 'Transportation') {
-      if (value.includes('Air Travel')) {
-        setActivityValueGuide({
-          label: "Flight Distance",
-          description: "Total distance of your flight",
-          unit: "km",
-          placeholder: "e.g., 1200"
-        });
-      } else if (value.includes('Train')) {
-        setActivityValueGuide({
-          label: "Train Journey Distance",
-          description: "Distance traveled by train",
-          unit: "km",
-          placeholder: "e.g., 300"
-        });
-      } else if (value.includes('Two-Wheeler')) {
-        setActivityValueGuide({
-          label: "Distance Traveled",
-          description: "Total distance traveled on your two-wheeler",
-          unit: "km",
-          placeholder: "e.g., 50"
-        });
-      } else {
-        setActivityValueGuide({
-          label: "Distance Traveled",
-          description: "Total distance traveled in your vehicle",
-          unit: "km",
-          placeholder: "e.g., 100"
-        });
-      }
-    } else if (sector === 'Energy') {
-      setActivityValueGuide({
-        label: "Energy Consumed",
-        description: "Total electricity consumption",
-        unit: "kWh",
-        placeholder: "e.g., 250"
-      });
-    } else if (sector === 'Industry') {
-      setActivityValueGuide({
-        label: "Production Amount",
-        description: "Total production volume",
-        unit: "units",
-        placeholder: "e.g., 500"
-      });
-    } else if (sector === 'Household') {
-      setActivityValueGuide({
-        label: "Usage Time",
-        description: "Total time of device/appliance usage",
-        unit: "hours",
-        placeholder: "e.g., 120"
-      });
-    } else if (sector === 'Building') {
-      setActivityValueGuide({
-        label: "Building Usage",
-        description: "Total energy used for heating/cooling",
-        unit: "kWh",
-        placeholder: "e.g., 400"
-      });
-    } else if (sector === 'Agriculture') {
-      setActivityValueGuide({
-        label: "Production Amount",
-        description: "Agricultural production volume",
-        unit: "kg",
-        placeholder: "e.g., 1000"
-      });
-    } else {
-      setActivityValueGuide({
-        label: "Usage Amount",
-        description: "Amount of resource used",
-        unit: "units",
-        placeholder: "Enter amount"
-      });
-    }
+    // Use the new guide function
+    const guide = getActivityGuide(sector, value);
+    setActivityValueGuide(guide);
     
     // Animate to the next step
     setCurrentStep("activity");

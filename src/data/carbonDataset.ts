@@ -1,4 +1,3 @@
-
 // Carbon footprint dataset derived from dataset_cc.csv
 export interface CarbonDataEntry {
   country: string;
@@ -12,6 +11,14 @@ export interface CarbonDataEntry {
 // Sample dataset structure - expanded with more countries and sectors
 export const carbonDataset: CarbonDataEntry[] = [
   // United States
+  {
+    country: "United States",
+    sector: "Transportation",
+    subSector: "Electric Car",
+    totalCarbonEmission: 0.085, // kg CO2 per kilometer
+    reusableAllocation: ["Renewable Charging", "Smart Charging", "Battery Recycling"],
+    reusableCarbonPercentage: 0.40
+  },
   {
     country: "United States",
     sector: "Transportation",
@@ -47,6 +54,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   {
     country: "United States",
     sector: "Energy",
+    subSector: "Smart Home Systems",
+    totalCarbonEmission: 0.32, // kg CO2 per kWh
+    reusableAllocation: ["IoT Optimization", "Automated Energy Management"],
+    reusableCarbonPercentage: 0.55
+  },
+  {
+    country: "United States",
+    sector: "Energy",
     subSector: "Electricity",
     totalCarbonEmission: 0.42, // kg CO2 per kWh
     reusableAllocation: ["Solar Power", "Wind Power", "Hydropower"],
@@ -60,8 +75,24 @@ export const carbonDataset: CarbonDataEntry[] = [
     reusableAllocation: ["Sustainable Farming", "Methane Capture"],
     reusableCarbonPercentage: 0.25
   },
+  {
+    country: "United States",
+    sector: "Transportation",
+    subSector: "High-Speed Rail",
+    totalCarbonEmission: 0.041, // kg CO2 per passenger kilometer
+    reusableAllocation: ["Electric Trains", "Energy Recovery Systems"],
+    reusableCarbonPercentage: 0.65
+  },
   
   // India (Added as requested)
+  {
+    country: "India",
+    sector: "Transportation",
+    subSector: "Electric Rickshaw",
+    totalCarbonEmission: 0.05, // kg CO2 per kilometer
+    reusableAllocation: ["Solar Charging", "Battery Swapping"],
+    reusableCarbonPercentage: 0.45
+  },
   {
     country: "India",
     sector: "Transportation",
@@ -89,6 +120,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   {
     country: "India",
     sector: "Industry",
+    subSector: "Textile Production",
+    totalCarbonEmission: 0.75, // kg CO2 per kg product
+    reusableAllocation: ["Sustainable Fibers", "Energy-Efficient Processing"],
+    reusableCarbonPercentage: 0.40
+  },
+  {
+    country: "India",
+    sector: "Industry",
     subSector: "Manufacturing",
     totalCarbonEmission: 0.95, // kg CO2 per unit
     reusableAllocation: ["Energy Efficiency", "Clean Production"],
@@ -104,6 +143,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   },
   
   // United Kingdom
+  {
+    country: "United Kingdom",
+    sector: "Building",
+    subSector: "Smart Office",
+    totalCarbonEmission: 0.15, // kg CO2 per square meter per hour
+    reusableAllocation: ["Smart HVAC", "Occupancy-Based Lighting"],
+    reusableCarbonPercentage: 0.55
+  },
   {
     country: "United Kingdom",
     sector: "Transportation",
@@ -130,6 +177,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   },
   
   // Germany
+  {
+    country: "Germany",
+    sector: "Industry",
+    subSector: "Chemical Manufacturing",
+    totalCarbonEmission: 2.1, // kg CO2 per kg product
+    reusableAllocation: ["Green Chemistry", "Process Optimization"],
+    reusableCarbonPercentage: 0.35
+  },
   {
     country: "Germany",
     sector: "Transportation",
@@ -159,6 +214,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   {
     country: "Japan",
     sector: "Transportation",
+    subSector: "Hydrogen Bus",
+    totalCarbonEmission: 0.085, // kg CO2 per kilometer
+    reusableAllocation: ["Green Hydrogen", "Fuel Cell Optimization"],
+    reusableCarbonPercentage: 0.60
+  },
+  {
+    country: "Japan",
+    sector: "Transportation",
     subSector: "Train",
     totalCarbonEmission: 0.021, // kg CO2 per passenger kilometer
     reusableAllocation: ["Electric Trains", "Maglev Technology"],
@@ -182,6 +245,14 @@ export const carbonDataset: CarbonDataEntry[] = [
   },
   
   // China
+  {
+    country: "China",
+    sector: "Industry",
+    subSector: "Electronics Assembly",
+    totalCarbonEmission: 0.45, // kg CO2 per unit
+    reusableAllocation: ["Energy-Efficient Assembly", "Smart Factory Systems"],
+    reusableCarbonPercentage: 0.40
+  },
   {
     country: "China",
     sector: "Transportation",
@@ -323,4 +394,76 @@ export const getAllSectors = (): string[] => {
 // Get all subsectors across all countries and sectors
 export const getAllSubSectors = (): string[] => {
   return Array.from(new Set(carbonDataset.map(entry => entry.subSector)));
+};
+
+// Update the activity value guide based on sub-sector
+export const getActivityGuide = (sector: string, subSector: string) => {
+  if (sector === 'Transportation') {
+    if (subSector.includes('Electric')) {
+      return {
+        label: "Distance Traveled",
+        description: "Total distance traveled in your electric vehicle",
+        unit: "km",
+        placeholder: "e.g., 100"
+      };
+    } else if (subSector.includes('Rail') || subSector.includes('Train')) {
+      return {
+        label: "Journey Distance",
+        description: "Total distance of your rail journey",
+        unit: "km",
+        placeholder: "e.g., 500"
+      };
+    } else if (subSector.includes('Rickshaw')) {
+      return {
+        label: "Trip Distance",
+        description: "Total distance of your rickshaw trip",
+        unit: "km",
+        placeholder: "e.g., 15"
+      };
+    }
+    // Default transportation guide
+    return {
+      label: "Distance",
+      description: "Total distance traveled",
+      unit: "km",
+      placeholder: "Enter distance"
+    };
+  }
+
+  if (sector === 'Industry') {
+    if (subSector.includes('Manufacturing') || subSector.includes('Production')) {
+      return {
+        label: "Production Volume",
+        description: "Total units or weight of products manufactured",
+        unit: "kg",
+        placeholder: "e.g., 1000"
+      };
+    } else if (subSector.includes('Assembly')) {
+      return {
+        label: "Units Assembled",
+        description: "Number of units assembled",
+        unit: "units",
+        placeholder: "e.g., 500"
+      };
+    }
+  }
+
+  if (sector === 'Building') {
+    if (subSector.includes('Smart')) {
+      return {
+        label: "Operating Hours",
+        description: "Total hours of smart building operation",
+        unit: "hours",
+        placeholder: "e.g., 168"
+      };
+    }
+  }
+
+  // Default guide for other sectors
+  return {
+    label: "Activity Amount",
+    description: "Amount of activity performed",
+    unit: "units",
+    placeholder: "Enter amount"
+  };
 };
