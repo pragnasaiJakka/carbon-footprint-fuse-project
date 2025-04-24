@@ -16,7 +16,8 @@ import {
   getDataEntry, 
   saveCalculationResult, 
   CarbonFootprintResult,
-  getActivityGuide
+  getActivityGuide,
+  ActivityGuide
 } from '../data/carbonDataset';
 
 interface CalculatorFormValues {
@@ -24,13 +25,6 @@ interface CalculatorFormValues {
   sector: string;
   subSector: string;
   activityValue: number;
-}
-
-interface ActivityValueGuide {
-  label: string;
-  description: string;
-  unit: string;
-  placeholder: string;
 }
 
 const CarbonCalculator = () => {
@@ -41,7 +35,7 @@ const CarbonCalculator = () => {
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<CarbonFootprintResult | null>(null);
   const [currentStep, setCurrentStep] = useState<"country" | "sector" | "subsector" | "activity">("country");
-  const [activityValueGuide, setActivityValueGuide] = useState<ActivityValueGuide>({
+  const [activityValueGuide, setActivityValueGuide] = useState<ActivityGuide>({
     label: "Activity Value",
     description: "Enter the value of your activity",
     unit: "",
