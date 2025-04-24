@@ -6,8 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, AlertCircle, Check } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Check, AlertCircle, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 import { 
   getCountries, 
   getSectors, 
@@ -24,6 +26,13 @@ interface CalculatorFormValues {
   activityValue: number;
 }
 
+interface ActivityValueGuide {
+  label: string;
+  description: string;
+  unit: string;
+  placeholder: string;
+}
+
 const CarbonCalculator = () => {
   const { toast } = useToast();
   const [countries, setCountries] = useState<string[]>([]);
@@ -31,6 +40,13 @@ const CarbonCalculator = () => {
   const [subSectors, setSubSectors] = useState<string[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<CarbonFootprintResult | null>(null);
+  const [currentStep, setCurrentStep] = useState<"country" | "sector" | "subsector" | "activity">("country");
+  const [activityValueGuide, setActivityValueGuide] = useState<ActivityValueGuide>({
+    label: "Activity Value",
+    description: "Enter the value of your activity",
+    unit: "",
+    placeholder: "0"
+  });
   
   const form = useForm<CalculatorFormValues>({
     defaultValues: {
@@ -55,6 +71,9 @@ const CarbonCalculator = () => {
     const sectorsList = getSectors(value);
     setSectors(sectorsList);
     setSubSectors([]);
+    
+    // Animate to the next step
+    setCurrentStep("sector");
   };
 
   // Update sub-sectors when sector changes
@@ -65,6 +84,94 @@ const CarbonCalculator = () => {
     const country = form.getValues('country');
     const subSectorsList = getSubSectors(country, value);
     setSubSectors(subSectorsList);
+    
+    // Animate to the next step
+    setCurrentStep("subsector");
+  };
+  
+  // Handle subsector selection and set appropriate activity value guidance
+  const handleSubSectorChange = (value: string) => {
+    form.setValue('subSector', value);
+    
+    const sector = form.getValues('sector');
+    
+    // Set activity value guidance based on sector and subsector
+    if (sector === 'Transportation') {
+      if (value.includes('Air Travel')) {
+        setActivityValueGuide({
+          label: "Flight Distance",
+          description: "Total distance of your flight",
+          unit: "km",
+          placeholder: "e.g., 1200"
+        });
+      } else if (value.includes('Train')) {
+        setActivityValueGuide({
+          label: "Train Journey Distance",
+          description: "Distance traveled by train",
+          unit: "km",
+          placeholder: "e.g., 300"
+        });
+      } else if (value.includes('Two-Wheeler')) {
+        setActivityValueGuide({
+          label: "Distance Traveled",
+          description: "Total distance traveled on your two-wheeler",
+          unit: "km",
+          placeholder: "e.g., 50"
+        });
+      } else {
+        setActivityValueGuide({
+          label: "Distance Traveled",
+          description: "Total distance traveled in your vehicle",
+          unit: "km",
+          placeholder: "e.g., 100"
+        });
+      }
+    } else if (sector === 'Energy') {
+      setActivityValueGuide({
+        label: "Energy Consumed",
+        description: "Total electricity consumption",
+        unit: "kWh",
+        placeholder: "e.g., 250"
+      });
+    } else if (sector === 'Industry') {
+      setActivityValueGuide({
+        label: "Production Amount",
+        description: "Total production volume",
+        unit: "units",
+        placeholder: "e.g., 500"
+      });
+    } else if (sector === 'Household') {
+      setActivityValueGuide({
+        label: "Usage Time",
+        description: "Total time of device/appliance usage",
+        unit: "hours",
+        placeholder: "e.g., 120"
+      });
+    } else if (sector === 'Building') {
+      setActivityValueGuide({
+        label: "Building Usage",
+        description: "Total energy used for heating/cooling",
+        unit: "kWh",
+        placeholder: "e.g., 400"
+      });
+    } else if (sector === 'Agriculture') {
+      setActivityValueGuide({
+        label: "Production Amount",
+        description: "Agricultural production volume",
+        unit: "kg",
+        placeholder: "e.g., 1000"
+      });
+    } else {
+      setActivityValueGuide({
+        label: "Usage Amount",
+        description: "Amount of resource used",
+        unit: "units",
+        placeholder: "Enter amount"
+      });
+    }
+    
+    // Animate to the next step
+    setCurrentStep("activity");
   };
 
   const onSubmit = (data: CalculatorFormValues) => {
@@ -125,205 +232,404 @@ const CarbonCalculator = () => {
     }, 1000);
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        when: "beforeChildren",
+        staggerChildren: 0.3
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <Card className="shadow-lg border-eco-green-light">
+      <Card className="shadow-lg border-eco-green-light overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-eco-green-light/50 to-eco-blue-light/50">
           <CardTitle className="text-2xl text-eco-forest">Carbon Footprint Calculator</CardTitle>
           <CardDescription>Calculate your carbon footprint and explore offsetting options</CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="country"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <Select 
-                      onValueChange={handleCountryChange}
-                      value={form.getValues('country')}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your country" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem key={country} value={country}>
-                            {country}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      The country where the activity takes place
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="sector"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Sector</FormLabel>
-                    <Select 
-                      onValueChange={handleSectorChange}
-                      value={form.getValues('sector')}
-                      disabled={!form.getValues('country')}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a sector" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {sectors.map((sector) => (
-                          <SelectItem key={sector} value={sector}>
-                            {sector}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      The category of your activity
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="subSector"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Sub-Sector</FormLabel>
-                    <Select 
-                      onValueChange={(value) => form.setValue('subSector', value)}
-                      value={form.getValues('subSector')}
-                      disabled={!form.getValues('sector')}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a sub-sector" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {subSectors.map((subSector) => (
-                          <SelectItem key={subSector} value={subSector}>
-                            {subSector}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      The specific type of activity
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="activityValue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Activity Value</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        min="0"
-                        step="0.1"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {form.getValues('sector') === 'Transportation' 
-                        ? 'Distance traveled (km)' 
-                        : form.getValues('sector') === 'Energy' 
-                        ? 'Energy consumed (kWh)'
-                        : 'Usage (hours)'}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button 
-                type="submit" 
-                className="w-full bg-eco-green hover:bg-eco-green-dark text-white"
-                disabled={isCalculating || !form.getValues('country') || !form.getValues('sector') || !form.getValues('subSector') || form.getValues('activityValue') <= 0}
+        
+        <CardContent className="p-0">
+          <Tabs value={currentStep} className="w-full">
+            <TabsList className="w-full grid grid-cols-4 rounded-none border-b">
+              <TabsTrigger 
+                value="country" 
+                className={`data-[state=active]:bg-eco-green-light/30 ${currentStep === "country" ? "text-eco-forest" : ""}`}
+                disabled
               >
-                {isCalculating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Calculating...
-                  </>
-                ) : (
-                  'Calculate Footprint'
-                )}
-              </Button>
-            </form>
-          </Form>
+                Country
+              </TabsTrigger>
+              <TabsTrigger 
+                value="sector" 
+                className={`data-[state=active]:bg-eco-green-light/30 ${currentStep === "sector" ? "text-eco-forest" : ""}`} 
+                disabled
+              >
+                Sector
+              </TabsTrigger>
+              <TabsTrigger 
+                value="subsector" 
+                className={`data-[state=active]:bg-eco-green-light/30 ${currentStep === "subsector" ? "text-eco-forest" : ""}`} 
+                disabled
+              >
+                Sub-Sector
+              </TabsTrigger>
+              <TabsTrigger 
+                value="activity" 
+                className={`data-[state=active]:bg-eco-green-light/30 ${currentStep === "activity" ? "text-eco-forest" : ""}`} 
+                disabled
+              >
+                Activity
+              </TabsTrigger>
+            </TabsList>
+            
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <TabsContent value="country" className="py-6 px-6">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-6"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <FormField
+                        control={form.control}
+                        name="country"
+                        render={() => (
+                          <FormItem>
+                            <FormLabel>Select Your Country</FormLabel>
+                            <Select 
+                              onValueChange={handleCountryChange}
+                              value={form.getValues('country')}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="border-eco-green-light focus:ring-eco-green">
+                                  <SelectValue placeholder="Choose a country" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="max-h-[300px]">
+                                {countries.map((country) => (
+                                  <SelectItem key={country} value={country}>
+                                    {country}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormDescription>
+                              The country where the activity takes place
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </motion.div>
+                    
+                    <motion.div variants={itemVariants} className="flex justify-end">
+                      <Button 
+                        type="button"
+                        disabled={!form.getValues("country")}
+                        onClick={() => setCurrentStep("sector")}
+                        className="bg-eco-green hover:bg-eco-green-dark text-white"
+                      >
+                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </TabsContent>
+                
+                <TabsContent value="sector" className="py-6 px-6">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-6"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <FormField
+                        control={form.control}
+                        name="sector"
+                        render={() => (
+                          <FormItem>
+                            <FormLabel>Select Activity Sector</FormLabel>
+                            <Select 
+                              onValueChange={handleSectorChange}
+                              value={form.getValues('sector')}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="border-eco-green-light focus:ring-eco-green">
+                                  <SelectValue placeholder="Choose a sector" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="max-h-[300px]">
+                                {sectors.map((sector) => (
+                                  <SelectItem key={sector} value={sector}>
+                                    {sector}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormDescription>
+                              The category of your activity
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </motion.div>
+                    
+                    <motion.div variants={itemVariants} className="flex justify-between">
+                      <Button 
+                        type="button"
+                        onClick={() => setCurrentStep("country")}
+                        variant="outline"
+                        className="border-eco-green text-eco-green hover:bg-eco-green/10"
+                      >
+                        Back
+                      </Button>
+                      <Button 
+                        type="button"
+                        disabled={!form.getValues("sector")}
+                        onClick={() => setCurrentStep("subsector")}
+                        className="bg-eco-green hover:bg-eco-green-dark text-white"
+                      >
+                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </TabsContent>
+                
+                <TabsContent value="subsector" className="py-6 px-6">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-6"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <FormField
+                        control={form.control}
+                        name="subSector"
+                        render={() => (
+                          <FormItem>
+                            <FormLabel>Select Sub-Sector</FormLabel>
+                            <Select 
+                              onValueChange={handleSubSectorChange}
+                              value={form.getValues('subSector')}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="border-eco-green-light focus:ring-eco-green">
+                                  <SelectValue placeholder="Choose a sub-sector" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="max-h-[300px]">
+                                {subSectors.map((subSector) => (
+                                  <SelectItem key={subSector} value={subSector}>
+                                    {subSector}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormDescription>
+                              The specific type of activity
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </motion.div>
+                    
+                    <motion.div variants={itemVariants} className="flex justify-between">
+                      <Button 
+                        type="button"
+                        onClick={() => setCurrentStep("sector")}
+                        variant="outline"
+                        className="border-eco-green text-eco-green hover:bg-eco-green/10"
+                      >
+                        Back
+                      </Button>
+                      <Button 
+                        type="button"
+                        disabled={!form.getValues("subSector")}
+                        onClick={() => setCurrentStep("activity")}
+                        className="bg-eco-green hover:bg-eco-green-dark text-white"
+                      >
+                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </TabsContent>
+                
+                <TabsContent value="activity" className="py-6 px-6">
+                  <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-6"
+                  >
+                    <motion.div variants={itemVariants}>
+                      <div className="bg-eco-green/5 p-4 rounded-md mb-4">
+                        <h3 className="font-medium text-eco-forest mb-2">About {form.getValues('subSector')}</h3>
+                        <p className="text-sm text-gray-600">
+                          {form.getValues('sector') === 'Transportation' 
+                            ? `Transportation via ${form.getValues('subSector')} is a common activity with significant carbon impact.`
+                            : form.getValues('sector') === 'Energy'
+                            ? `Energy usage through ${form.getValues('subSector')} contributes to your carbon footprint.`
+                            : `Activities in the ${form.getValues('subSector')} sub-sector affect your overall emissions.`
+                          }
+                        </p>
+                      </div>
+                    </motion.div>
+                    
+                    <motion.div variants={itemVariants}>
+                      <FormField
+                        control={form.control}
+                        name="activityValue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{activityValueGuide.label}</FormLabel>
+                            <div className="flex items-center space-x-2">
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder={activityValueGuide.placeholder}
+                                  min="0"
+                                  step="0.1"
+                                  className="border-eco-green-light focus:ring-eco-green"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              {activityValueGuide.unit && (
+                                <span className="text-sm font-medium text-gray-500">{activityValueGuide.unit}</span>
+                              )}
+                            </div>
+                            <FormDescription>
+                              {activityValueGuide.description}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </motion.div>
+                    
+                    <motion.div variants={itemVariants} className="flex justify-between">
+                      <Button 
+                        type="button"
+                        onClick={() => setCurrentStep("subsector")}
+                        variant="outline"
+                        className="border-eco-green text-eco-green hover:bg-eco-green/10"
+                      >
+                        Back
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        className="bg-eco-green hover:bg-eco-green-dark text-white"
+                        disabled={isCalculating || form.getValues('activityValue') <= 0}
+                      >
+                        {isCalculating ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Calculating...
+                          </>
+                        ) : (
+                          'Calculate Footprint'
+                        )}
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                </TabsContent>
+              </form>
+            </Form>
+          </Tabs>
         </CardContent>
       </Card>
       
       {result && (
-        <Card className="mt-8 shadow-md border-eco-blue-light animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-xl text-eco-forest">Your Carbon Footprint</CardTitle>
-            <CardDescription>
-              Based on {result.activity.value} {result.activity.sector === 'Transportation' ? 'km' : result.activity.sector === 'Energy' ? 'kWh' : 'hours'} of {result.activity.subSector} in {result.activity.country}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-eco-green/10 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">Total Emission</h3>
-                <p className="text-2xl font-bold text-eco-forest">{result.totalEmission} kg CO₂</p>
-              </div>
-              <div className="bg-eco-blue-light/10 p-4 rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">Reusable Carbon</h3>
-                <p className="text-2xl font-bold text-eco-blue">{result.reusableCarbon} kg CO₂</p>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-sm font-medium mb-2">Suggestions for Reduction</h3>
-              <ul className="space-y-2">
-                {result.suggestions.map((suggestion, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-eco-green flex-shrink-0 mt-0.5" />
-                    <span>{suggestion}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button 
-              variant="outline" 
-              className="w-full border-eco-green text-eco-green hover:bg-eco-green/10"
-              onClick={() => {
-                toast({
-                  title: "Result Saved",
-                  description: "Your carbon footprint result has been saved for offsetting.",
-                });
-              }}
-            >
-              Save for Carbon Credit Minting
-            </Button>
-          </CardFooter>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <Card className="mt-8 shadow-md border-eco-blue-light">
+            <CardHeader className="bg-gradient-to-r from-eco-blue-light/20 to-eco-green-light/20">
+              <CardTitle className="text-xl text-eco-forest">Your Carbon Footprint</CardTitle>
+              <CardDescription>
+                Based on {result.activity.value} {result.activity.sector === 'Transportation' ? 'km' : result.activity.sector === 'Energy' ? 'kWh' : 'hours'} of {result.activity.subSector} in {result.activity.country}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 pt-6">
+              <motion.div 
+                className="grid grid-cols-2 gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              >
+                <motion.div 
+                  className="bg-eco-green/10 p-4 rounded-lg"
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.6, duration: 0.4, type: "spring" }}
+                >
+                  <h3 className="text-sm font-medium text-muted-foreground">Total Emission</h3>
+                  <p className="text-2xl font-bold text-eco-forest">{result.totalEmission} kg CO₂</p>
+                </motion.div>
+                <motion.div 
+                  className="bg-eco-blue-light/10 p-4 rounded-lg"
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.7, duration: 0.4, type: "spring" }}
+                >
+                  <h3 className="text-sm font-medium text-muted-foreground">Reusable Carbon</h3>
+                  <p className="text-2xl font-bold text-eco-blue">{result.reusableCarbon} kg CO₂</p>
+                </motion.div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <h3 className="text-sm font-medium mb-2">Suggestions for Reduction</h3>
+                <ul className="space-y-2">
+                  {result.suggestions.map((suggestion, index) => (
+                    <motion.li 
+                      key={index} 
+                      className="flex items-start gap-2"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.9 + (index * 0.1), duration: 0.3 }}
+                    >
+                      <Check className="h-5 w-5 text-eco-green flex-shrink-0 mt-0.5" />
+                      <span>{suggestion}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                variant="outline" 
+                className="w-full border-eco-green text-eco-green hover:bg-eco-green/10"
+                onClick={() => {
+                  toast({
+                    title: "Result Saved",
+                    description: "Your carbon footprint result has been saved for offsetting.",
+                  });
+                }}
+              >
+                Save for Carbon Credit Minting
+              </Button>
+            </CardFooter>
+          </Card>
+        </motion.div>
       )}
     </div>
   );
