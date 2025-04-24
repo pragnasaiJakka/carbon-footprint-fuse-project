@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import InfoCard from '@/components/InfoCard';
@@ -6,6 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calculator, Leaf, Lightbulb, Car, Link, Building2, BarChart3, LineChart, TrendingUp } from 'lucide-react';
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  const handleCalculateFootprint = () => {
+    navigate('/calculator');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-eco-green-light/10">
       <Header />
@@ -19,9 +26,12 @@ const Index = () => {
               Merging accurate carbon footprint estimation with blockchain technology for a sustainable future.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <a href="#calculator" className="bg-eco-green hover:bg-eco-green-dark text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md">
+              <button 
+                onClick={handleCalculateFootprint}
+                className="bg-eco-green hover:bg-eco-green-dark text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md"
+              >
                 Calculate Your Footprint
-              </a>
+              </button>
               <a href="#about" className="bg-white hover:bg-gray-100 text-eco-green-dark border border-eco-green px-6 py-3 rounded-lg font-medium transition-colors shadow-md">
                 Learn More
               </a>
