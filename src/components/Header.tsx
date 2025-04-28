@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Leaf, LogIn, LogOut, Calculator, Info, Database } from 'lucide-react';
+import { Leaf, LogIn, LogOut, Database, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from '@/hooks/use-toast';
 
@@ -67,10 +67,10 @@ const Header = () => {
             </div>
           ) : (
             <Button 
-              className="bg-eco-green text-white px-4 py-2 rounded-md hover:bg-eco-green-dark transition-colors"
+              className="bg-eco-green text-white px-4 py-2 rounded-md hover:bg-eco-green-dark transition-colors flex items-center gap-2"
               onClick={() => navigate('/login')}
             >
-              <LogIn className="mr-2 h-4 w-4" />
+              <LogIn className="h-4 w-4" />
               Login
             </Button>
           )}
